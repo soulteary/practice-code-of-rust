@@ -2,14 +2,15 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
+const MIN_LIMIT: u8 = 1;
+const MAX_LIMIT: u8 = 100;
+
 fn main() {
-    let min_limit: u8 = 1;
-    let max_limit: u8 = 100;
-    let mut _min_number = min_limit;
-    let mut _max_number = max_limit;
+    let mut _min_number = MIN_LIMIT;
+    let mut _max_number = MAX_LIMIT;
     let mut _turn = 1;
 
-    let _secret_number = rand::thread_rng().gen_range(min_limit, max_limit);
+    let _secret_number = rand::thread_rng().gen_range(MIN_LIMIT, MAX_LIMIT);
 
     println!("[Guess Number]");
 

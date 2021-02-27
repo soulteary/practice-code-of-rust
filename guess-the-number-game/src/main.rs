@@ -2,15 +2,19 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
-const MIN_LIMIT: u8 = 1;
-const MAX_LIMIT: u8 = 100;
+struct Range {
+    min: u8,
+    max: u8,
+}
+
+const RANGE_LIMIT: Range = Range { min: 1, max: 100 };
 
 fn main() {
-    let mut _min_number = MIN_LIMIT;
-    let mut _max_number = MAX_LIMIT;
+    let mut _min_number = RANGE_LIMIT.min;
+    let mut _max_number = RANGE_LIMIT.max;
     let mut _turn = 1;
 
-    let _secret_number = rand::thread_rng().gen_range(MIN_LIMIT, MAX_LIMIT);
+    let _secret_number = rand::thread_rng().gen_range(RANGE_LIMIT.min, RANGE_LIMIT.max + 1);
 
     println!("[Guess Number]");
 
@@ -39,10 +43,10 @@ fn main() {
         println!("Your input: {}", guess_number);
         println!("");
 
-        if guess_number >= MAX_LIMIT {
+        if guess_number >= _max_number {
             println!("> Should be less than the maximum.");
             continue;
-        } else if guess_number <= MIN_LIMIT {
+        } else if guess_number <= _min_number {
             println!("> Should be greater than the minimum.");
             continue;
         }

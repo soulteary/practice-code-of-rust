@@ -16,11 +16,12 @@ impl Notice {
     fn show_question(turn: &u8, min: &u8, max: &u8) {
         println!("[TURN #{}]Give me an answer? [{}, {}]\n", turn, min, max);
     }
-
     fn show_user_input(num: &u8) {
         println!("Your input: {}\n", &num);
     }
-
+    fn show_input_invalid() {
+        println!("Input invalid.");
+    }
     fn show_out_of_range(min: &u8, max: &u8) {
         println!("> Should pick a number between [{}, {}]\n", min, max);
     }
@@ -62,9 +63,10 @@ fn main() {
         _turn += 1;
 
         let mut guess_number = String::new();
-        io::stdin()
-            .read_line(&mut guess_number)
-            .expect("Input Error.");
+        match io::stdin().read_line(&mut guess_number) {
+            Ok(_n) => (),
+            Err(_error) => Notice::show_input_invalid(),
+        }
 
         let guess_number: u8 = match guess_number.trim().parse() {
             Ok(n) => n,

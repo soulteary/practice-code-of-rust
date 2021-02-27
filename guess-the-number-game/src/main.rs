@@ -7,12 +7,20 @@ struct Range {
     max: u8,
 }
 
-struct Error {}
+struct Notice {}
 
-impl Error {
+impl Notice {
+    fn show_game_title() {
+        println!("[Guess Number]");
+    }
     fn show_question(turn: &u8, min: &u8, max: &u8) {
         println!("[TURN #{}]Give me an answer? [{}, {}]\n", turn, min, max);
     }
+
+    fn show_user_input(num: &u8) {
+        println!("Your input: {}\n", &num);
+    }
+
     fn show_out_of_range(min: &u8, max: &u8) {
         println!("> Should pick a number between [{}, {}]\n", min, max);
     }
@@ -30,6 +38,14 @@ impl Error {
     }
 }
 
+struct Success {}
+
+impl Success {
+    fn show_win() {
+        println!("> You Win!\n");
+    }
+}
+
 const RANGE_LIMIT: Range = Range { min: 1, max: 100 };
 
 fn main() {
@@ -39,46 +55,46 @@ fn main() {
 
     let _secret_number = rand::thread_rng().gen_range(RANGE_LIMIT.min, RANGE_LIMIT.max + 1);
 
-    println!("[Guess Number]");
+    Notice::show_game_title();
 
     loop {
-        Error::show_question(&_turn, &_min_number, &_max_number);
+        Notice::show_question(&_turn, &_min_number, &_max_number);
         _turn += 1;
 
         let mut guess_number = String::new();
         io::stdin()
             .read_line(&mut guess_number)
-            .expect("Input error.");
+            .expect("Input Error.");
 
         let guess_number: u8 = match guess_number.trim().parse() {
             Ok(n) => n,
             Err(_) => {
-                Error::show_out_of_range(&_min_number, &_max_number);
+                Notice::show_out_of_range(&_min_number, &_max_number);
                 continue;
             }
         };
-        println!("Your input: {}\n", guess_number);
+
+        Notice::show_user_input(&guess_number);
 
         if guess_number >= _max_number {
-            Error::show_too_large();
+            Notice::show_too_large();
             continue;
         } else if guess_number <= _min_number {
-            Error::show_too_small();
+            Notice::show_too_small();
             continue;
         }
 
         match guess_number.cmp(&_secret_number) {
             Ordering::Less => {
-                Error::show_less_than_answer();
+                Notice::show_less_than_answer();
                 _min_number = guess_number;
             }
             Ordering::Greater => {
-                Error::show_larger_than_answer();
+                Notice::show_larger_than_answer();
                 _max_number = guess_number;
             }
             Ordering::Equal => {
-                println!("> You Win!\n");
-                break;
+                return Success::show_win();
             }
         }
     }

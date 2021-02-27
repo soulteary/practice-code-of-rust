@@ -19,51 +19,47 @@ fn main() {
             "[TURN #{}]Give me an answer? [{}, {}]",
             _turn, _min_number, _max_number
         );
+        _turn += 1;
 
         let mut guess_number = String::new();
         io::stdin()
             .read_line(&mut guess_number)
             .expect("Input error.");
 
-        let guess_number: u8 = guess_number.trim().parse().expect("Input error.");
+        let guess_number: u8 = match guess_number.trim().parse() {
+            Ok(n) => n,
+            Err(_) => {
+                println!(
+                    "> Should pick a number between [{}, {}]",
+                    _min_number, _max_number
+                );
+                continue;
+            }
+        };
         println!("Your input: {}", guess_number);
         println!("");
 
-        _turn += 1;
+        if guess_number >= MAX_LIMIT {
+            println!("> Should be less than the maximum.");
+            continue;
+        } else if guess_number <= MIN_LIMIT {
+            println!("> Should be greater than the minimum.");
+            continue;
+        }
 
-        match guess_number.cmp(&_min_number) {
+        match guess_number.cmp(&_secret_number) {
             Ordering::Less => {
-                println!("> Input error.");
-                continue;
+                println!("> The value is too small, readjust the range.\n");
+                _min_number = guess_number;
+            }
+            Ordering::Greater => {
+                println!("> The value is too large, readjust the range.\n");
+                _max_number = guess_number;
             }
             Ordering::Equal => {
-                println!("> Should be greater than the minimum.");
-                continue;
+                println!("> You Win!\n");
+                break;
             }
-            Ordering::Greater => match guess_number.cmp(&_max_number) {
-                Ordering::Greater => {
-                    println!("> Input error.");
-                    continue;
-                }
-                Ordering::Equal => {
-                    println!("> Should be less than the maximum.");
-                    continue;
-                }
-                Ordering::Less => match guess_number.cmp(&_secret_number) {
-                    Ordering::Less => {
-                        println!("> The value is too small, readjust the range.\n");
-                        _min_number = guess_number;
-                    }
-                    Ordering::Greater => {
-                        println!("> The value is too large, readjust the range.\n");
-                        _max_number = guess_number;
-                    }
-                    Ordering::Equal => {
-                        println!("> You Win!\n");
-                        break;
-                    }
-                },
-            },
         }
     }
 }
